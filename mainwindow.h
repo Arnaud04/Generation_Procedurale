@@ -58,9 +58,25 @@ public:
     void getNormalFaces(MyMesh * _mesh, std::vector<MyMesh::Point> *faceNormals);
     float getNormeAngle(MyMesh::Point vecteur1, MyMesh::Point vecteur2);
     void builtSquareFaces(MyMesh *_mesh, int squareLength, int squareWidth);
-    float getStrechingGround(int maxValue, int iteration);
+    float getStrechingGround(int maxValue, int iteration); //set
     void printListPoint(MyMesh *_mesh);
     void getElementsRepartition(MyMesh * _mesh);
+
+    double getLCDNumberMountain();
+    double getLCDNumberValley();
+    double getLCDNumberPlain();
+
+    double getValSpinBoxValley();
+    double getValSpinBoxMountain();
+    double getValSpinBoxPlain();
+    void setValSpinBoxValley(double val);
+    void setValSpinBoxMountain(double val);
+    void setValSpinBoxPlain(double val);
+    bool sumSpinBox();
+    void printLabelsRegion();
+    bool compareParamToGenerateMap(QVector<int> * p_vect);
+    void app(/*QVector<int> * order_id_elm,*/MyMesh *_mesh, int * toInc, int * toDeac, QVector<int> * vect_valElmRegion, QVector<int> * vect_processToDo_elmRegion, int work_on_id_region);
+    void modifPlain(MyMesh * _mesh, QVector<int> * vect_valElmRegion);
 
 private slots:
     void on_pushButton_chargement_clicked();
@@ -72,6 +88,14 @@ private slots:
     void on_delateVertex_clicked();
 
     void on_setRegion_clicked();
+
+    void on_QPushButon_Modif_clicked();
+
+    void on_doubleSpinBox_mountain_valueChanged(double arg1);
+
+    void on_doubleSpinBox_valley_valueChanged(double arg1);
+
+    void on_doubleSpinBox_plain_valueChanged(double arg1);
 
 private:
 

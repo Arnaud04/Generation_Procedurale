@@ -682,6 +682,164 @@ void MainWindow::getElementsRepartition(MyMesh * _mesh)
 
 }
 
+double MainWindow::getLCDNumberMountain()
+{
+    return ui->lcdNumber_Mountain->value();
+}
+
+double MainWindow::getLCDNumberValley()
+{
+    return ui->lcdNumber_Valley->value();
+}
+
+double MainWindow::getLCDNumberPlain()
+{
+    return ui->lcdNumber_PLain->value();
+}
+
+double MainWindow::getValSpinBoxValley()
+{
+    return ui->doubleSpinBox_valley->value();
+}
+
+double MainWindow::getValSpinBoxMountain()
+{
+    return ui->doubleSpinBox_mountain->value();
+}
+
+double MainWindow::getValSpinBoxPlain()
+{
+    return ui->doubleSpinBox_plain->value();
+}
+
+void MainWindow::setValSpinBoxValley(double val)
+{
+    ui->doubleSpinBox_valley->setValue(val);
+}
+
+void MainWindow::setValSpinBoxMountain(double val)
+{
+    ui->doubleSpinBox_mountain->setValue(val);
+}
+
+void MainWindow::setValSpinBoxPlain(double val)
+{
+    ui->doubleSpinBox_plain->setValue(val);
+}
+
+bool MainWindow::sumSpinBox()
+{
+    if (getValSpinBoxPlain() + getValSpinBoxValley() + getValSpinBoxMountain() > 100.0)
+        return false;
+    return true;
+}
+
+void MainWindow::printLabelsRegion()
+{
+    qDebug() << __FUNCTION__;
+    qDebug() << labelRegion.size(); // == nb faces
+    QVector<int> test;
+    int v;
+    bool ajout;
+    for (int i = 0; i < static_cast<int>(labelRegion.size()); i++) {
+        v = labelRegion.at(i);
+        ajout = true;
+        for (int j = 0; j < static_cast<int>(test.size()); j++) {
+            if (test.at(j) == v)
+                ajout = false;
+        }
+        if (ajout) {
+            test.push_back(v);
+            qDebug() << v;
+        }
+    }
+}
+
+bool MainWindow::compareParamToGenerateMap(QVector<int> * p_vect)
+{
+    p_vect->push_back( static_cast<int>( getLCDNumberValley() - getValSpinBoxValley() ) );
+    p_vect->push_back( static_cast<int>( getLCDNumberMountain() - getValSpinBoxMountain() ) );
+    p_vect->push_back( static_cast<int>( getLCDNumberPlain() - getValSpinBoxPlain() ) );
+    for (int i = 0; i < p_vect->size(); i++) {
+        if(p_vect->at(i) != 0.0)
+            return false;
+    }
+    return true;
+}
+
+void MainWindow::app(/*QVector<int> * order_id_elm,*/MyMesh *_mesh, int * toInc, int * toDeac, QVector<int> * vect_valElmRegion, QVector<int> * vect_processToDo_elmRegion, int work_on_id_region = 0)
+{
+    // ------------ old ----------- KO
+    // order_id_elm => FIFO VALEY, MOUNTAIN ...
+    //int u = MOUNTAIN;
+    /*int process = 0;
+    for (int i = 0; i < vect_processToDo_elmRegion->size(); i++) {
+        qDebug() << "*********";
+        process = vect_processToDo_elmRegion->at(i);
+        switch (process) {
+        case -1 :
+            work_on_id_region = i+1;
+            break;
+        case 1 :
+            work_on_id_region = i+1;
+            break;
+        default:
+            break;
+        }
+
+        if (work_on_id_region != 0) {
+            qDebug() << "----";
+            int i_label = 0;
+            for (MyMesh::FaceIter curFace = _mesh->faces_begin(); curFace != _mesh->faces_end(); curFace++)
+            {
+                //_mesh->set_color(*curFace, MyMesh::Color(150, 150, 150));
+                if ( labelRegion.at(i_label) == work_on_id_region ) {
+                    _mesh->set_color(*curFace, MyMesh::Color(150, 0, 0));
+                    modifPlain(_mesh, process, vect_valElmRegion);
+
+                }
+                i_label++;
+            }
+        }
+
+        work_on_id_region = 0;
+        return;
+    }*/
+}
+
+void MainWindow::modifPlain(MyMesh *_mesh, QVector<int> * vect_valElmRegion)
+{
+    unsigned nb_area = 1;
+    bool OK = false;
+
+    qDebug() << __FUNCTION__ << " " << vect_valElmRegion->at( 0 );
+    return; // temporaire
+
+    //int i = 0;
+    while (OK) {
+        // tire rand
+        unsigned id_face_current = static_cast <unsigned> ( rand() ) / static_cast <unsigned> ( _mesh->n_faces() );
+
+        if ( labelRegion.at(id_face_current) != PLAIN) {
+            // nb de face a modif
+            unsigned nb_faces_to_modif = (_mesh->n_faces() * vect_valElmRegion->at(PLAIN - 1)) / 100;
+
+            // --- parcours voisinage face
+            QVector<int> vect_neight_visited;
+            QVector<int> vect_neight_to_visited;
+            /*while () {
+                MyMesh::FaceHandle fh_current = _mesh->face_handle(id_face_current);
+                for (MyMesh::FaceFaceIter ff_iter = _mesh->ff_iter(fh_current); ff_iter.is_valid(); ff_iter++) {
+                    if ( labelRegion.at(id_face_current) != PLAIN) {
+
+                    }
+                }
+            }*/
+            // ---
+        }
+    }
+}
+
 void MainWindow::printListPoint(MyMesh *_mesh)
 {
 
@@ -1045,7 +1203,6 @@ void MainWindow::on_delateVertex_clicked()
 
 void MainWindow::on_setRegion_clicked()
 {
-
     std::vector<MyMesh::Point> faceNormals;
     int label = 1;
     int minimalRegionSize = 3;
@@ -1085,4 +1242,77 @@ void MainWindow::on_setRegion_clicked()
 
     getElementsRepartition(&mesh);
 
+    // --- maj ---
+    setValSpinBoxPlain( getLCDNumberPlain() );
+    setValSpinBoxValley( getLCDNumberValley() );
+    setValSpinBoxMountain( getLCDNumberMountain() );
+    // -----------
+}
+
+void MainWindow::on_QPushButon_Modif_clicked()
+{
+    // Valley 1, Mountain 2, Plain 3
+    qDebug() << __FUNCTION__;
+    /*mesh.set_color(mesh.face_handle(1), MyMesh::Color(150, 0, 0));
+    displayMesh(&mesh);*/
+    //printLabelsRegion();
+
+    // verifier si les param correspond au a la map deja generer
+    QVector<int> vect_valElmRegion;
+    vect_valElmRegion.reserve(3);
+
+    if ( !compareParamToGenerateMap(&vect_valElmRegion) ) {
+        QVector<int> vect_processToDo_elmRegion; // -1 a diminuer, 1 a augmenter, 0 ne rien faire
+        int elmRegionToIncrease = 0;
+        int elmRegionToDecrease = 0;
+        for (int i = 0; i < vect_valElmRegion.size(); i++) {
+            if (vect_valElmRegion.at(i) < 0.0) {
+                 vect_processToDo_elmRegion.push_back(1);
+                 elmRegionToIncrease++;
+            }
+            else if (vect_valElmRegion.at(i) > 0.0) {
+                vect_processToDo_elmRegion.push_back(-1);
+                elmRegionToDecrease++;
+            }
+            else
+                vect_processToDo_elmRegion.push_back(0);
+        }
+
+        // ----------------------
+        // appliquer les changement de hauteur
+        qDebug() << "toInc : : " << elmRegionToIncrease << " || toDeac : : " << elmRegionToDecrease;
+
+        modifPlain(&mesh, &vect_valElmRegion);
+
+
+        //app(&mesh, &elmRegionToIncrease, &elmRegionToDecrease, &vect_valElmRegion, &vect_processToDo_elmRegion);
+        //displayMesh(&mesh);
+
+        return;
+        for (int i = 0; i < vect_processToDo_elmRegion.size(); i++) {
+            if (vect_processToDo_elmRegion.at(i) != 0) {
+                /*for (int j = i+1; j != i; j = (j + 1)%vect_processToDo_elmRegion.size() ) {
+
+                }*/
+            }
+        }
+    }
+}
+
+void MainWindow::on_doubleSpinBox_mountain_valueChanged(double arg1)
+{
+    if (!sumSpinBox())
+        setValSpinBoxMountain(arg1-1);
+}
+
+void MainWindow::on_doubleSpinBox_valley_valueChanged(double arg1)
+{
+    if (!sumSpinBox())
+        setValSpinBoxValley(arg1-1);
+}
+
+void MainWindow::on_doubleSpinBox_plain_valueChanged(double arg1)
+{
+    if (!sumSpinBox())
+        setValSpinBoxPlain(arg1-1);
 }
